@@ -65,7 +65,7 @@ CREATE INDEX idx_one_time_codes_expires_at ON one_time_codes(expires_at);
 -- Test user: admin@cachatto.click / password123
 -- bcrypt hash of "password123"
 INSERT INTO users (id, email, password_hash) VALUES
-    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'admin@cachatto.click', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy')
+    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'admin@cachatto.click', '$2a$10$uddi6eclOX5sEPYRYGQu/ud4fGBCpa.i5/weYHrcasPLHpeVfsQwi')
 ON CONFLICT (email) DO NOTHING;
 
 -- Sample slave apps

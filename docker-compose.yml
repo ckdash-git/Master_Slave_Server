@@ -18,5 +18,22 @@ services:
       timeout: 5s
       retries: 5
 
+  server:
+    build: .
+    container_name: master_slave_server
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgres://masteruser:masterpass@postgres:5432/master_slave_db?sslmode=disable
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_ACCESS_EXPIRY: ${JWT_ACCESS_EXPIRY:-15m}
+      JWT_REFRESH_EXPIRY: ${JWT_REFRESH_EXPIRY:-168h}
+      OTC_EXPIRY: ${OTC_EXPIRY:-30s}
+      SERVER_PORT: "8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   pgdata:
