@@ -40,15 +40,20 @@ func main() {
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
 	// ─── Auto-Migrate Models ─────────────────────────────────────────
-	if err := db.AutoMigrate(
-		&models.User{},
-		&models.App{},
-		&models.UserAppPermission{},
-		&models.OneTimeCode{},
-	); err != nil {
-		log.Fatalf("❌ Failed to auto-migrate: %v", err)
+	// Only auto-migrate if tables don't exist yet (avoids conflict with SQL migration)
+	if !db.Migrator().HasTable(&models.User{}) {
+		if err := db.AutoMigrate(
+			&models.User{},
+			&models.App{},
+			&models.UserAppPermission{},
+			&models.OneTimeCode{},
+		); err != nil {
+			log.Fatalf("❌ Failed to auto-migrate: %v", err)
+		}
+		log.Println("✅ Database migration complete (auto-migrate)")
+	} else {
+		log.Println("✅ Database tables already exist (SQL migration)")
 	}
-	log.Println("✅ Database migration complete")
 
 	// ─── Initialize Repositories ─────────────────────────────────────
 	userRepo := repository.NewUserRepository(db)
