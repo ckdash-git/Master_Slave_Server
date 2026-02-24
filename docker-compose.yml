@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: master_slave_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: master_slave_db
+      POSTGRES_USER: masteruser
+      POSTGRES_PASSWORD: masterpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U masteruser -d master_slave_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
